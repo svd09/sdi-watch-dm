@@ -94,11 +94,15 @@ ui <- fluidPage(
                      textOutput("recab2")
                      
                       ),
-        
+# adding more information regarding the score
+# need to add some padding here -- space to make the text
+# more readable. Also get more data from the paper and add that here...
         
         h6('The sdiWATCH-DM Score recalibrates the WATCH-DM score using the social
            deprivation index (SDI). The SDI is a composite measure obtained for each residential zip code using 
-           data from the American Community Survey (2015)')
+           data from the American Community Survey (2015)'),
+
+    h6("Model developed by: Salil Deo, Ayush Patel, Sadeer Al-Kindi")
         
         
         )))
