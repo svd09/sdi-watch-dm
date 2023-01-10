@@ -1,0 +1,11 @@
+/* css file to style the app*/
+
+* {
+    font-family: Arial, Sans-Serif;
+    color: blue;
+}
+
+.nav li a box-title{
+    font-weight: bold;
+    font-align: center;
+}

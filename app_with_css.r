@@ -3,9 +3,12 @@ library(bs4Dash)
 library(shinyWidgets)
 library(leaflet)
 library(tidyverse)
-library(shinydashboard)
 library(shinydashboardPlus)
 library(fresh)
+# library(shiny.semantic)
+# library(semantic.dashboard)
+library(shinydashboard)
+library(shiny)
 
 load('d_zipcodes.rda')
 
@@ -24,8 +27,9 @@ shinyApp(
 # now to get the action buttons into the sidebar
 
         sidebar = dashboardSidebar(
-          
             
+        tags$link(rel = "stylesheet", type = "text/css", href = "www/style.css" ),
+
             sliderInput(
                 inputId = "options_age", label = "Age(years)",
                 min = 30, max = 90, step = 1, value = 50
@@ -73,29 +77,28 @@ shinyApp(
 
 # insert the map and the estimated risk i.e. the results in the body 
         body = dashboardBody(
-        
-         
-                
+            
+        use_theme(my_theme),    
+            
         tabBox(width = 12,
                tabPanel("Result", width = 12,icon = icon("bar-chart"),
-                    
             
 # use the box feature to put the map above and then the results
             
             box(width = 9,title = "Zip code Map",
                    
-            leafletOutput("zmap"),collapsible = T,solidHeader = T, status = "teal"),
+            leafletOutput("zmap"),collapsible = T, height = 100),
             
             box(width = 6, title = "Total WATCH-DM Points",
-                   textOutput("sum"), solidHeader = T, status = "primary"),
- #           box(width = 6, title = "5-year HFH risk category",      
- #                  textOutput("risk"), solidHeader = T, status = "primary"),
+                   textOutput("sum")),
+            box(width = 6, title = "5-year HFH risk category",      
+                   textOutput("risk")),
             box(width = 6, title = "5-year HFH risk: original WATCH-DM Score",      
-                   textOutput("orig"), solidHeader = T, status = "primary"),
+                   textOutput("orig")),
             box(width = 6, title = "The SDI quintile according to the Zip code",      
-                   textOutput("q2"), solidHeader = T, status = "primary"),
+                   textOutput("q2")),
             box(width = 6, title = "5-year recalibrated HFH risk: sdiWATCH-DM Score",       
-                   textOutput("recab2"), solidHeader = T, status = "orange")
+                   textOutput("recab2"))
       ),
 
     tabPanel("Details", width = 12,icon = icon("circle-info"),
@@ -104,8 +107,7 @@ shinyApp(
                 h6("The WATCH-DM Score is a model to predict the 5-year heart failure hospitalization risk (HFH)
                    in patients with type 2 diabetes mellitus (T2DM). The model contains the following variables; age, body mass index, 
                    blood pressure (systolic & diastolic), 
-                   HbA1c level, HDL-C level, serum creatinine, H/O myocardial infarction, and H/O coronary artery bypass grafting. Details regarding the original 
-                   WATCH-DM score can be found at: https://pubmed.ncbi.nlm.nih.gov/35656988/. We have recalibrated the score
+                   HbA1c level, HDL-C level, serum creatinine, H/O myocardial infarction, and H/O coronary artery bypass grafting. We have recalibrated the score
                    using data from more than 1,000,000 US Veterans receiving outpatient care in the VA healthcare system. We have used their residential zip codes 
                    to determine their social deprivation index (SDI) and present the recalibrated 5-year risk for HFH. The score should not be interpreted as 
                    medical advice. It is to be used by healthcare professionals as an aid for shared clinical decision-making."),

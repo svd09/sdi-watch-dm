@@ -31,14 +31,21 @@ choice_hdlc <- c(5,3,0)
 
 
 ui <- semanticPage(
-    title = "The Re-calibrated WATCH-DM score using 
-                  the Social Deprivation Index",
-    h1("SDI-WATCH-DM Score"),
-    h5("This online calculator calculates the risk of the first  
-    heart failure hospitalization for people with type II diabetes mellitus without prior heart failure. 
-    Please select values for your patient using the drop-down options provided below:"),
+    # title = "The Re-calibrated WATCH-DM score using 
+    #               the Social Deprivation Index",
+    # h1("SDI-WATCH-DM Score"),
+    # h5("This online calculator calculates the risk of the first  
+    # heart failure hospitalization for people with type II diabetes mellitus without prior heart failure. 
+    # Please select values for your patient using the drop-down options provided below:"),
+    # 
+    # 
     
-    main_panel(
+    shiny.semantic::sidebar_layout(
+    
+    shiny.semantic::sidebar_panel(
+    
+    
+    
         cards(
             class = "nine",
             card(
@@ -107,7 +114,13 @@ ui <- semanticPage(
             class = "green",
             label(class = "header", "Zip code"),
             numeric_input(input_id = "zip_code",label = "5 digit postal Zip Code",value = 44139)
+        )
+        
+    )
         ),
+    
+    main_panel(
+        ,
         card(
             class = "purple",
             label(class = "header", "Total Points"),

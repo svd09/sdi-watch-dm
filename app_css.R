@@ -3,28 +3,31 @@ library(bs4Dash)
 library(shinyWidgets)
 library(leaflet)
 library(tidyverse)
-library(shinydashboard)
 library(shinydashboardPlus)
-library(fresh)
+
 
 load('d_zipcodes.rda')
 
 shinyApp(
     ui = dashboardPage(
         
-# get the theme         
-        
-#        skin = "midnight",
         
         
-# now to insert the action buttons in the side bar...        
-# keep the header title         
-    header = dashboardHeader(title = "sdiWATCH-DM Score"),
-
-# now to get the action buttons into the sidebar
-
+      
+        # get the theme         
+        
+        #        skin = "midnight",
+        
+        
+        # now to insert the action buttons in the side bar...        
+        # keep the header title         
+        header = dashboardHeader(title = "sdiWATCH-DM Score"),
+        
+        # now to get the action buttons into the sidebar
+        
         sidebar = dashboardSidebar(
-          
+            
+            tags$link(rel = "stylesheet", type="text/css", href="www/style.css"),
             
             sliderInput(
                 inputId = "options_age", label = "Age(years)",
@@ -69,51 +72,49 @@ shinyApp(
             
             # get risk
             actionButton("score", "Get Risk")
-            ),
-
-# insert the map and the estimated risk i.e. the results in the body 
-        body = dashboardBody(
+        ),
         
-         
-                
-        tabBox(width = 12,
-               tabPanel("Result", width = 12,icon = icon("bar-chart"),
-                    
+        # insert the map and the estimated risk i.e. the results in the body 
+        body = dashboardBody(
             
-# use the box feature to put the map above and then the results
+           
             
-            box(width = 9,title = "Zip code Map",
+            tabBox(width = 12,
+                   tabPanel("Result", width = 12,icon = icon("bar-chart"),
+                            
+                            # use the box feature to put the map above and then the results
+                            
+                            box(width = 9,title = "Zip code Map",
+                                
+                                leafletOutput("zmap"),collapsible = T, style = "circle"),
+                            
+                            box(width = 6, title = "Total WATCH-DM Points",
+                                textOutput("sum")),
+                            box(width = 6, title = "5-year HFH risk category",      
+                                textOutput("risk")),
+                            box(width = 6, title = "5-year HFH risk: original WATCH-DM Score",      
+                                textOutput("orig")),
+                            box(width = 6, title = "The SDI quintile according to the Zip code",      
+                                textOutput("q2")),
+                            box(width = 6, title = "5-year recalibrated HFH risk: sdiWATCH-DM Score",       
+                                textOutput("recab2"))
+                   ),
                    
-            leafletOutput("zmap"),collapsible = T,solidHeader = T, status = "teal"),
-            
-            box(width = 6, title = "Total WATCH-DM Points",
-                   textOutput("sum"), solidHeader = T, status = "primary"),
- #           box(width = 6, title = "5-year HFH risk category",      
- #                  textOutput("risk"), solidHeader = T, status = "primary"),
-            box(width = 6, title = "5-year HFH risk: original WATCH-DM Score",      
-                   textOutput("orig"), solidHeader = T, status = "primary"),
-            box(width = 6, title = "The SDI quintile according to the Zip code",      
-                   textOutput("q2"), solidHeader = T, status = "primary"),
-            box(width = 6, title = "5-year recalibrated HFH risk: sdiWATCH-DM Score",       
-                   textOutput("recab2"), solidHeader = T, status = "orange")
-      ),
-
-    tabPanel("Details", width = 12,icon = icon("circle-info"),
-             
-             box(width = 12, 
-                h6("The WATCH-DM Score is a model to predict the 5-year heart failure hospitalization risk (HFH)
+                   tabPanel("Details", width = 12,icon = icon("circle-info"),
+                            
+                            box(width = 12, 
+                                h6("The WATCH-DM Score is a model to predict the 5-year heart failure hospitalization risk (HFH)
                    in patients with type 2 diabetes mellitus (T2DM). The model contains the following variables; age, body mass index, 
                    blood pressure (systolic & diastolic), 
-                   HbA1c level, HDL-C level, serum creatinine, H/O myocardial infarction, and H/O coronary artery bypass grafting. Details regarding the original 
-                   WATCH-DM score can be found at: https://pubmed.ncbi.nlm.nih.gov/35656988/. We have recalibrated the score
+                   HbA1c level, HDL-C level, serum creatinine, H/O myocardial infarction, and H/O coronary artery bypass grafting. We have recalibrated the score
                    using data from more than 1,000,000 US Veterans receiving outpatient care in the VA healthcare system. We have used their residential zip codes 
                    to determine their social deprivation index (SDI) and present the recalibrated 5-year risk for HFH. The score should not be interpreted as 
                    medical advice. It is to be used by healthcare professionals as an aid for shared clinical decision-making."),
-                tags$html(),
-                h6("The manuscript is currently under review and a link to the original paper will be provided once the paper is accepted for publication.
+                   tags$html(),
+                   h6("The manuscript is currently under review and a link to the original paper will be provided once the paper is accepted for publication.
                    Users that would like to use our code for their own app development can access the folder on github - https://github.com/svd09/sdi-watch-dm-shinyapp
                    or contact the developers listed below." ))))
-)
+        )
         ,
         
         
@@ -122,9 +123,9 @@ shinyApp(
                                  right = "svd14@case.edu"),
         title = "Contact Details"
     ),
-
-
-server = function(input, output, session) { 
+    
+    
+    server = function(input, output, session) { 
         observeEvent(input$score, {
             # age
             
@@ -218,7 +219,7 @@ server = function(input, output, session) {
             prior_cabg <- ifelse(
                 input$options_cabg == "No",0,3
             )
-
+            
             n <- age + bmi + hdlc + hba1c + sbp + dbp + prior_mi + prior_cabg
             
             #output$sum <- renderText(paste("The WATCH-DM Score is", n))
